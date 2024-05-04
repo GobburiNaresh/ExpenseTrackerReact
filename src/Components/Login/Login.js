@@ -1,13 +1,14 @@
 import React, { useState,useRef } from 'react';
 import Card from '../UI/Card';
 import { Link, useHistory } from 'react-router-dom';
-import './Login.css';
+import classes from './Login.module.css';
 import Button from '../UI/Button';
 
 const Login = () => {
     const emailInputRef = useRef();
     const passwordInputRef = useRef();
     const[loginCredentials,setLoginCredentials] = useState('');
+    const[login,setLogin] = useState(false);
     const history = useHistory();
 
     const onLoginHandler = async (event) => {
@@ -28,7 +29,7 @@ const Login = () => {
                     'Content-Type': 'application/json'
                 }
             });
-            await response.json();
+            const data = await response.json();
             if (!response.ok) {
                 setLoginCredentials('Invalid Credentials!');
                 emailInputRef.current.value = '';
@@ -36,6 +37,7 @@ const Login = () => {
                 return;
             }
             setLoginCredentials('');
+            setLogin(true);
             history.replace('/expense');
             emailInputRef.current.value = '';
             passwordInputRef.current.value = '';
@@ -47,7 +49,7 @@ const Login = () => {
     return (
         <Card>
             <h1>Login</h1>
-            {loginCredentials&& <h5 className="invalidCredentials">{loginCredentials}</h5>}
+            {loginCredentials&& <h5 className={classes.invalidCredentials}>{loginCredentials}</h5>}
             <form className='login' onSubmit={onLoginHandler}>
                 <label htmlFor='Email'>Email</label>
                 <input type='email' ref={emailInputRef} required />
@@ -56,6 +58,7 @@ const Login = () => {
                 <Button type="submit">Login</Button>
                 <Link to="/password"><h5>Forgot Password</h5></Link>
             </form>
+            {login}
         </Card>
     )
 }
