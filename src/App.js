@@ -5,29 +5,33 @@ import Login from './Components/Login/Login';
 import ForgotPassword from './Components/ForgotPassword/ForgotPasssword';
 import ExpenseTracker from './Components/ExpenseTracker/ExpenseTracker';
 import ContactProfile from './Components/ExpenseTracker/ContactProfile';
+import {AuthContextProvider} from './Components/store/auth-context';
 
 function App() {
   return (
-   <Router>
-    <Switch>
-      <Route exact path="/">
-        <Signup/>
-      </Route>
-      <Route path="/Login">
-        <Login/>
-      </Route>
-      <Route path="/password">
-        <ForgotPassword/>
-      </Route>
-      <Route path="/expense">
-        <ExpenseTracker/>
-      </Route>
-      <Route path="/contact">
-        <ExpenseTracker/>
-        <ContactProfile/>
-      </Route>
-    </Switch>
-   </Router>
+    <AuthContextProvider>
+      <Router>
+        <Switch>
+          <Route exact path="/">
+            <Signup/>
+          </Route>
+          <Route path="/Login">
+            <Login/>
+          </Route>
+          <Route path="/password">
+            <ForgotPassword/>
+          </Route>
+          <Route path="/expense">
+            <ExpenseTracker/>
+          </Route>
+          <Route path="/contact">
+            <ExpenseTracker/>
+            <ContactProfile/>
+          </Route>
+        </Switch>
+      </Router>
+    </AuthContextProvider>
+   
   );
 }
 

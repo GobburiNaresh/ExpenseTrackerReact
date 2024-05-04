@@ -1,8 +1,9 @@
-import React, { useState,useRef } from 'react';
+import React, { useState,useRef,useContext } from 'react';
 import Card from '../UI/Card';
 import { Link, useHistory } from 'react-router-dom';
 import classes from './Login.module.css';
 import Button from '../UI/Button';
+import AuthContext from '../store/auth-context';
 
 const Login = () => {
     const emailInputRef = useRef();
@@ -10,6 +11,7 @@ const Login = () => {
     const[loginCredentials,setLoginCredentials] = useState('');
     const[login,setLogin] = useState(false);
     const history = useHistory();
+    const authCtx = useContext(AuthContext);
 
     const onLoginHandler = async (event) => {
         event.preventDefault();
@@ -30,6 +32,7 @@ const Login = () => {
                 }
             });
             const data = await response.json();
+            const token = data.idToken;
             if (!response.ok) {
                 setLoginCredentials('Invalid Credentials!');
                 emailInputRef.current.value = '';
@@ -38,6 +41,7 @@ const Login = () => {
             }
             setLoginCredentials('');
             setLogin(true);
+            authCtx.login(token);
             history.replace('/expense');
             emailInputRef.current.value = '';
             passwordInputRef.current.value = '';

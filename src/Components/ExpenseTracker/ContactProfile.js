@@ -1,49 +1,84 @@
-import React, { useState,useRef } from 'react';
-import {useHistory} from 'react-router-dom';
+import React, { useState, useRef, useContext } from 'react';
+import { useHistory } from 'react-router-dom';
 import './ContactProfile.css';
 import Button from '../UI/Button';
+import AuthContext from '../store/auth-context';
 
 const ContactProfile = () => {
     const [closed, setClosed] = useState(false);
     const history = useHistory();
     const nameInputRef = useRef();
     const urlInputRef = useRef();
+    const authCtx = useContext(AuthContext);
 
     const closeHandler = () => {
         setClosed(true);
         history.replace('/expense');
     }
+
     if (closed) {
         return null;
     }
+
     const onSubmitHandler = (event) => {
         event.preventDefault();
 
         const name = nameInputRef.current.value;
         const url = urlInputRef.current.value;
 
-        console.log(name,url);
+        fetch('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDfuDej43mIj2qhanl1mQ3Skj3n769JR7U',{
+            method: 'POST',
+            body: JSON.stringify({
+                idToken: authCtx.token,
+            }),
+            headers: {
+                'content-type': 'application/json',
+            }
+        })
+        .then((res) => {
+            if (!res.ok) {
+                throw new Error('Error!!');
+            }
+            return res.json();
+        })
+        .then((data) => {
+            // Handle response data if needed
+            console.log(data);
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+
         fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDfuDej43mIj2qhanl1mQ3Skj3n769JR7U',
             {
-                method: 'POST',
-            body: JSON.stringify({ name, url }),
+            method: 'POST',
+            body: JSON.stringify(
+                {   
+                    idToken: authCtx.token,
+                    displayName: name,
+                    photoUrl: url,
+                    deleteAttribute: 'name'
+                }),
             headers: {
                 'Content-Type': 'application/json'
             }
         })
-        .then(response => response.json())
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Error!!');
+            }
+            return res.json();
+        })
         .then(data => {
-            console.log(data);
             setClosed(true);
             history.replace('/expense');
         })
         .catch(error => {
             console.error('Error:', error);
         });
-    
+
         nameInputRef.current.value = '';
         urlInputRef.current.value = '';
-
     }
 
     return (
