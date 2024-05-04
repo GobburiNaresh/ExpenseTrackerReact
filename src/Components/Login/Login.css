@@ -20,3 +20,9 @@ input {
     border: 1px solid #ccc;
 }
 
+.invalidCredentials{
+    text-align:center;
+    font-family: cursive;
+    color: red;
+}
+
