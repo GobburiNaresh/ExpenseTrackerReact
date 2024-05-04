@@ -49,12 +49,11 @@ const Signup = () => {
             console.error(error);
         }
     };
-
     return (
         <Card>
             <h1>Signup</h1>
             {passwordMessage && <h5 className="passwordMessage">{passwordMessage}</h5>}
-            <form onSubmit={onSubmitHandler}>
+            <form className='signup' onSubmit={onSubmitHandler}>
                 <label htmlFor='email'>Email</label>
                 <input type='email' id='email' ref={emailInputRef} required />
                 <label htmlFor='password'>Password</label>

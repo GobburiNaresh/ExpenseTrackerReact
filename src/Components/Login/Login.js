@@ -48,7 +48,7 @@ const Login = () => {
         <Card>
             <h1>Login</h1>
             {loginCredentials&& <h5 className="invalidCredentials">{loginCredentials}</h5>}
-            <form onSubmit={onLoginHandler}>
+            <form className='login' onSubmit={onLoginHandler}>
                 <label htmlFor='Email'>Email</label>
                 <input type='email' ref={emailInputRef} required />
                 <label htmlFor='password'>Password</label>

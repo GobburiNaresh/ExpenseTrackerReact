@@ -1,4 +1,23 @@
 .expense{
-    justify-content: center;
-    color: white;
-}
+    padding: 0.5rem;
+    background-color: white;
+  }
+  
+  .expense h5 {
+    display: inline-block;
+    margin: 0;
+  }
+  
+  .expense h5:nth-child(2) {
+    float: right;
+  }
+  
+  .expense::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 1px;
+    background-color: black;
+    margin-top: 10px;
+  }
+  
