@@ -26,29 +26,7 @@ const ContactProfile = () => {
         const name = nameInputRef.current.value;
         const url = urlInputRef.current.value;
 
-        fetch('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDfuDej43mIj2qhanl1mQ3Skj3n769JR7U',{
-            method: 'POST',
-            body: JSON.stringify({
-                idToken: authCtx.token,
-            }),
-            headers: {
-                'content-type': 'application/json',
-            }
-        })
-        .then((res) => {
-            if (!res.ok) {
-                throw new Error('Error!!');
-            }
-            return res.json();
-        })
-        .then((data) => {
-            // Handle response data if needed
-            console.log(data);
-        })
-        .catch((err) => {
-            console.log(err);
-        });
-
+       
         fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDfuDej43mIj2qhanl1mQ3Skj3n769JR7U',
             {
             method: 'POST',
@@ -57,7 +35,7 @@ const ContactProfile = () => {
                     idToken: authCtx.token,
                     displayName: name,
                     photoUrl: url,
-                    deleteAttribute: 'name'
+                    returnSecureToken: true
                 }),
             headers: {
                 'Content-Type': 'application/json'
@@ -70,15 +48,19 @@ const ContactProfile = () => {
             return res.json();
         })
         .then(data => {
+            const userName = data.displayName;
+            const profileUrl = data.photoUrl;
+            authCtx.updateUser(userName,profileUrl);
             setClosed(true);
             history.replace('/expense');
+            nameInputRef.current.value = '';
+            urlInputRef.current.value = '';
         })
         .catch(error => {
             console.error('Error:', error);
         });
 
-        nameInputRef.current.value = '';
-        urlInputRef.current.value = '';
+        
     }
 
     return (

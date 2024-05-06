@@ -41,6 +41,7 @@ const Login = () => {
             }
             setLoginCredentials('');
             setLogin(true);
+            localStorage.setItem('email',email);
             authCtx.login(token);
             history.replace('/expense');
             emailInputRef.current.value = '';
