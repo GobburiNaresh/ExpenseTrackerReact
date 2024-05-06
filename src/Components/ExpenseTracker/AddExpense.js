@@ -21,7 +21,22 @@ const AddExpense = () => {
             category: category
         }
         console.log(expenseDetails);
-
+        const response = fetch('https://expensetracker-172ee-default-rtdb.firebaseio.com/expense.json',{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                expense: expenseDetails
+            })
+        }).then((res) => {
+            console.log(res.json)
+        }).then((data) => {
+            console.log(data);
+        }).catch((err) => {
+            console.error(err);
+        })
+        console.log(response);
 
         moneySpendRef.current.value = '';
         descriptionRef.current.value = '';
