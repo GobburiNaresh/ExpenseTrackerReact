@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import './ExpenseTracker.css';
 import AuthContext from '../store/auth-context';
+import AddExpense from './AddExpense';
 
 const ExpenseTracker = () => {
     const authCtx = useContext(AuthContext);
@@ -76,11 +77,11 @@ const ExpenseTracker = () => {
                             <button onClick={verifyEmailHandler}>verifyEmail</button>
                         </div>
                     )}
-                    
                 </div>
             </div>
             <h5 className='welcome'>Welcome To Expense Tracker!...</h5>
             {profileIncomplete && <h5 className='complete-profile'><Link to='/contact'>Complete your profile now</Link></h5>}
+            <AddExpense/>
         </div>
     );
 };

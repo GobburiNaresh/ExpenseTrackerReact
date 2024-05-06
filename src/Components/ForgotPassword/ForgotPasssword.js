@@ -1,15 +1,21 @@
-import React from 'react';
+import React,{useRef} from 'react';
 import Card from '../UI/Card';
 import './ForgotPassword.css';
 import Button from '../UI/Button';
 const Login = () => {
+    const userEmailRef = useRef();
+    const forgotHandler = (event) => {
+        event.preventHandler();
+        const userEmail = userEmailRef.current.value;
+        console.log(userEmail);
+    }
     return(
         <Card>
             <h1>Forgot Password</h1>
-            <form>
-                <label htmlFor='password'>New Password</label>
-                <input type='password'/>
-                <Button>Save</Button>
+            <form onSubmit={forgotHandler}>
+                <label htmlFor='Email'>Email</label>
+                <input type='email' ref={userEmailRef}/>
+                <Button type='submit'>Send</Button>
             </form>
         </Card>
         
