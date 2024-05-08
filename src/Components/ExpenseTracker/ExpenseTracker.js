@@ -10,31 +10,35 @@ const ExpenseTracker = () => {
     const [userName, setUserName] = useState('');
     const [profileIncomplete, setProfileIncomplete] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
+    const [verifyEmail,setVerifyEmail] = useState(false);
 
     const logoutHandler = () => {
         authCtx.logout();
         history.replace('/');
     };
-    const userEmail = localStorage.getItem('email');
-    console.log(userEmail);
     const verifyEmailHandler = () => {
         fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDfuDej43mIj2qhanl1mQ3Skj3n769JR7U',{
             method: 'POST',
             body: JSON.stringify({
                 idToken: authCtx.token,
-                requestType: userEmail
+                requestType: 'VERIFY_EMAIL'
             }),
             headers: {
                 'Content-type': 'application/json',
             }
-        }).then((res) => {
-            console.log(res.json());
-        }).then((data) => {
-            console.log(data);
-        }).catch((err)=> {
+        })
+        .then((res) => res.json())
+        .then((data) => {
+           if(data.email){
+                console.log(data);
+                setVerifyEmail(true);
+           }
+        })
+        .catch((err)=> {
             console.error(err);
         })
     }
+    
 
     useEffect(() => {
         const fetchDetails = async () => {
@@ -74,7 +78,10 @@ const ExpenseTracker = () => {
                     {showDropdown && (
                         <div className="dropdown-content">
                             <button onClick={logoutHandler}>Logout</button>
-                            <button onClick={verifyEmailHandler}>verifyEmail</button>
+                            <button onClick={verifyEmailHandler}>
+                                {verifyEmail && "Email Verified"}
+                                {!verifyEmail && "Verify Email"}
+                            </button>
                         </div>
                     )}
                 </div>

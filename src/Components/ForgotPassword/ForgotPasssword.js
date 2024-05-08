@@ -1,15 +1,42 @@
-import React,{useRef} from 'react';
+import React, { useRef } from 'react';
 import Card from '../UI/Card';
 import './ForgotPassword.css';
 import Button from '../UI/Button';
-const Login = () => {
+
+const ForgotPassword = () => {
     const userEmailRef = useRef();
+
     const forgotHandler = (event) => {
-        event.preventHandler();
+        event.preventDefault();
         const userEmail = userEmailRef.current.value;
-        console.log(userEmail);
-    }
-    return(
+
+        fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDfuDej43mIj2qhanl1mQ3Skj3n769JR7U', {
+            method: 'POST',
+            body: JSON.stringify({
+                email: userEmail,
+                requestType: 'PASSWORD_RESET'
+            }),
+            headers: {
+                'Content-type': 'application/json',
+            }
+        })
+        .then((res) => {
+            if (res.ok) {
+                return res.json();
+            } else {
+                throw new Error('Failed to reset password');
+            }
+        })
+        .then((data) => {
+            userEmailRef.current.value = '';
+
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+    };
+
+    return (
         <Card>
             <h1>Forgot Password</h1>
             <form onSubmit={forgotHandler}>
@@ -18,8 +45,7 @@ const Login = () => {
                 <Button type='submit'>Send</Button>
             </form>
         </Card>
-        
-    )
-}
+    );
+};
 
-export default Login;
+export default ForgotPassword;

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import Card from '../UI/Card';
 import Button from '../UI/Button';
 import './AddExpense.css';
+import GetExpenses from './getExpenses';
 
 const AddExpense = () => {
     const moneySpendRef = useRef();
@@ -9,31 +10,7 @@ const AddExpense = () => {
     const categoryRef = useRef();
     const [expenses, setExpenses] = useState([]);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch('https://expensetracker-172ee-default-rtdb.firebaseio.com/expense.json');
-                const data = await response.json();
-                const loadedExpenses = [];
-
-                for (const key in data) {
-                    loadedExpenses.push({
-                        id: key,
-                        money: data[key].expense.money,
-                        description: data[key].expense.description,
-                        category: data[key].expense.category
-                    });
-                }
-
-                setExpenses(loadedExpenses);
-            } catch (error) {
-                console.error('Error fetching data:', error);
-            }
-        };
-
-        fetchData();
-    }, []);
-
+   
     const addExpenseHandler = async (event) => {
         event.preventDefault();
 
@@ -89,22 +66,7 @@ const AddExpense = () => {
             <Button>Submit</Button>
           </form>
         </Card>
-        <Card>
-          <h2>Expense Details</h2>
-          <ol>
-            {expenses.map((expense) => (
-              <li key={expense.id} className="expenseItem">
-                <h3>
-                  {expense.money} -- {expense.description} -- {expense.category}
-                </h3>
-                <div className="editDelete">
-                    <button className="delete">Delete</button>
-                    <button className="edit">Edit</button>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </Card>
+        <GetExpenses expenses={expenses} setExpenses={setExpenses}/>
       </div>
     );
 }
