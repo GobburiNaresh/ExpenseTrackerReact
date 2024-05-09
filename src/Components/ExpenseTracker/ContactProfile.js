@@ -50,7 +50,6 @@ const ContactProfile = () => {
         .then(data => {
             const userName = data.displayName;
             const profileUrl = data.photoUrl;
-            authCtx.updateUser(userName,profileUrl);
             setClosed(true);
             history.replace('/expense');
             nameInputRef.current.value = '';

@@ -15,17 +15,16 @@ function App() {
           <Route exact path="/">
             <Signup/>
           </Route>
-          <Route path="/Login">
+          <Route exact path="/Login">
             <Login/>
           </Route>
-          <Route path="/password">
+          <Route exact path="/password">
             <ForgotPassword/>
           </Route>
-          <Route path="/expense">
+          <Route exact path="/expense">
             <ExpenseTracker/>
           </Route>
-          <Route path="/contact">
-            <ExpenseTracker/>
+          <Route exact path="/contact">
             <ContactProfile/>
           </Route>
         </Switch>

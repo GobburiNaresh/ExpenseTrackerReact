@@ -1,3 +1,4 @@
+
 import React, { useContext, useState, useEffect } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import './ExpenseTracker.css';
@@ -10,14 +11,15 @@ const ExpenseTracker = () => {
     const [userName, setUserName] = useState('');
     const [profileIncomplete, setProfileIncomplete] = useState(false);
     const [showDropdown, setShowDropdown] = useState(false);
-    const [verifyEmail,setVerifyEmail] = useState(false);
+    const [verifyEmail, setVerifyEmail] = useState(false);
 
     const logoutHandler = () => {
         authCtx.logout();
         history.replace('/');
     };
+
     const verifyEmailHandler = () => {
-        fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDfuDej43mIj2qhanl1mQ3Skj3n769JR7U',{
+        fetch('https://identitytoolkit.googleapis.com/v1/accounts:sendOobCode?key=AIzaSyDfuDej43mIj2qhanl1mQ3Skj3n769JR7U', {
             method: 'POST',
             body: JSON.stringify({
                 idToken: authCtx.token,
@@ -31,19 +33,43 @@ const ExpenseTracker = () => {
         .then((data) => {
            if(data.email){
                 console.log(data);
-                setVerifyEmail(true);
+                confirmEmail(data.email);
            }
         })
         .catch((err)=> {
             console.error(err);
         })
     }
+
+    const confirmEmail = (verifiedEmail) => {
+        fetch('https://identitytoolkit.googleapis.com/v1/accounts:update?key=AIzaSyDfuDej43mIj2qhanl1mQ3Skj3n769JR7U', {
+            method: 'POST',
+            body: JSON.stringify({
+                idToken: authCtx.token,
+                emailVerified: true
+            }),
+            headers: {
+                'Content-type': 'application/json',
+            }
+        })
+        .then((res) => res.json())
+        .then((data) => {
+            console.log(data);
+            if(data.emailVerified === verifiedEmail){
+                setVerifyEmail(true);
+            }
+        })
+        .catch((err)=> {
+            console.error(err);
+        })
+    }
+
     
 
     useEffect(() => {
         const fetchDetails = async () => {
             try {
-                const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDfuDej43mIj2qhanl1mQ3Skj3n769JR7U',{
+                const response = await fetch('https://identitytoolkit.googleapis.com/v1/accounts:lookup?key=AIzaSyDfuDej43mIj2qhanl1mQ3Skj3n769JR7U', {
                     method: 'POST',
                     body: JSON.stringify({
                         idToken: authCtx.token,
@@ -61,13 +87,16 @@ const ExpenseTracker = () => {
                 } else {
                     setProfileIncomplete(true);
                 }
+                if(data.users[0].emailVerified){
+                    setVerifyEmail(true);
+                }
             } catch (error) {
                 console.error('Error:', error);
             }
         };
 
         fetchDetails();
-    },[authCtx]);
+    }, [authCtx]);
 
     return (
         <div className="expense">
@@ -79,8 +108,7 @@ const ExpenseTracker = () => {
                         <div className="dropdown-content">
                             <button onClick={logoutHandler}>Logout</button>
                             <button onClick={verifyEmailHandler}>
-                                {verifyEmail && "Email Verified"}
-                                {!verifyEmail && "Verify Email"}
+                                {verifyEmail ? "Email Verified" : "Verify Email"}
                             </button>
                         </div>
                     )}
@@ -88,7 +116,7 @@ const ExpenseTracker = () => {
             </div>
             <h5 className='welcome'>Welcome To Expense Tracker!...</h5>
             {profileIncomplete && <h5 className='complete-profile'><Link to='/contact'>Complete your profile now</Link></h5>}
-            <AddExpense/>
+            <AddExpense />
         </div>
     );
 };
